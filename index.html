@@ -19,6 +19,12 @@
 
   <!-- Custom styles for this template-->
   <link href="css/sb-admin-2.min.css" rel="stylesheet">
+  <style>
+    .modal-content {
+      width: unset;
+      margin: auto;
+    }
+  </style>
 
 </head>
 
@@ -144,14 +150,16 @@
               </div>
             </div>
           </div>
-          
+
           <!-- Content Row -->
           <div class="row">
             <!-- Content Column -->
             <div class="col-xl-12 col-lg-12">
               <p>Image Sample</p>
-              <a href="./img/sample/parasitized.png" class="btn btn-outline-secondary">Sample 1</a>
-              <a href="./img/sample/uninfected.png" class="btn btn-outline-secondary">Sample 2</a>
+              <a href="./img/sample/parasitized.png" class="btn btn-outline-secondary" data-toggle="modal"
+                data-target="#imgsample1">Sample 1</a>
+              <a href="./img/sample/uninfected.png" class="btn btn-outline-secondary" data-toggle="modal"
+                data-target="#imgsample2">Sample 2</a>
             </div>
           </div>
 
@@ -178,6 +186,24 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
+
+  <!-- Modal -->
+  <div class="modal fade" id="imgsample1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <img src="./img/sample/parasitized.png" alt="parasitized">
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="imgsample2" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <img src="./img/sample/uninfected.png" alt="uninfected">
+      </div>
+    </div>
+  </div>
 
   <!-- Bootstrap core JavaScript-->
   <script src="vendor/jquery/jquery.min.js"></script>
