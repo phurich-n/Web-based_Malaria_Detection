@@ -1,8 +1,15 @@
 $(function() {
-    var imagesPreview = function(input, placeToInsertImagePreview, imageResult0, imageResult1, imageResult2, imageResult3, pred1, pred2, pred3) {
+    var imagesPreview = function(input, placeToInsertImagePreview, imageResult0, imageResult1, imageResult2, imageResult3, total, parasitic, normal) {
         if (input.files) {
             var filesAmount = input.files.length;
+            var count_para = 0
+            var count_nor = 0
 
+            var m = 0;
+            var j = 0;
+            var k = 0;
+            var num = 100
+            var count_round = 0
             for (i = 0; i < filesAmount; i++) {
                 var reader = new FileReader();
                 reader.onload = function(event) {
@@ -31,7 +38,7 @@ $(function() {
 
                         let accumulate = false;
                         let channels = [1];
-                        let histSize = [256];
+                        let histSize = [512];
                         let ranges = [0, 256];
 
                         let hist = new cv.Mat();
@@ -46,23 +53,24 @@ $(function() {
                             resultofPredict.push(binVal)
                         }
 
+
                         var result = DecisionTree(resultofPredict)
+
                         if (result == 'Parasitized') {
-                            result = 'Parasitic (abn)'
+                            result = 'Parasitic'
+                            count_para++
                         } else {
-                            result = 'Normal (nor)'
+                            result = 'Normal'
+                            count_nor++
                         }
 
                         $("#clickPred").click(function() {
-                            var m = 0;
-                            var j = 0;
-                            var k = 0;
-                            var num = 0
                             var lock = true
                             $('#clickPred').attr('disabled', lock);
+
                             var counterBack = setInterval(function() {
                                 m = m + 5;
-                                k = k + 5;
+                                k = k + 6;
                                 if (m <= 100) {
                                     document.getElementById('percent').innerHTML = m + '%';
                                 }
@@ -71,16 +79,29 @@ $(function() {
                                 }
                                 if (m >= 110) {
                                     $($.parseHTML('<img width="20" height="20"><p>')).attr('src', event.target.result).appendTo(imageResult2);
-                                    $($.parseHTML('<p>' + result)).appendTo(imageResult3);
+                                    if (result == 'Parasitic') {
+                                        $($.parseHTML('<p><b style="color:red;">' + result)).appendTo(imageResult3);
+                                    } else {
+                                        $($.parseHTML('<p><b style="color:blue;">' + result)).appendTo(imageResult3);
+                                    }
                                     $('.progress-bar').css('width', num + '%');
-                                    document.getElementById('percent').innerHTML = '0%';
+                                    document.getElementById('percent').innerHTML = 'Succeses';
+                                    count_round++
+                                    if (count_round == filesAmount) {
+                                        $($.parseHTML('<h5 class="card-title">' + i + '     ' + 'image')).appendTo(total);
+                                        $($.parseHTML('<h5 class="card-title">' + count_para + '    ' + 'image')).appendTo(parasitic);
+                                        $($.parseHTML('<h5 class="card-title">' + count_nor + '     ' + 'image')).appendTo(normal);
+                                        let total_percent = 100
+                                        let para_percent = (count_para * 100) / i
+                                        let nor_percent = (count_nor * 100) / i
+                                        $($.parseHTML('<p class="card-text">' + total_percent + '     ' + '%')).appendTo(total);
+                                        $($.parseHTML('<p class="card-text">' + para_percent + '    ' + '%')).appendTo(parasitic);
+                                        $($.parseHTML('<p class="card-text">' + nor_percent + '     ' + '%')).appendTo(normal);
+                                    }
                                     clearInterval(counterBack);
                                 }
-                            }, filesAmount * 10);
+                            }, (filesAmount / 2) * 10);
                         });
-
-
-
 
                     }, 10);
                 }
@@ -94,7 +115,8 @@ $(function() {
     };
     $('#file-input').on('change', function() {
         var unlock = false
+        $('#file-input').attr('disabled', true);
         $('#clickPred').attr('disabled', unlock);
-        imagesPreview(this, 'div.preview', 'td.result0', 'td.result1', 'td.result2', 'td.result3', 'div.pred1', 'div.pred2', 'div.pred3');
+        imagesPreview(this, 'div.preview', 'td.result0', 'td.result1', 'td.result2', 'td.result3', 'div#total', 'div#parasitic', 'div#normal');
     });
 });
